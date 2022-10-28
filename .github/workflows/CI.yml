@@ -3,10 +3,10 @@
 on:
   push:
     branches:
-      - '*'
+      - "*"
 
 jobs:
-  Integration:
+  CI:
     runs-on: windows-latest
     defaults:
       run:
