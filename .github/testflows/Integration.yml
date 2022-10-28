@@ -1,0 +1,43 @@
+﻿name: Integration
+
+on:
+  push:
+    branches:
+      - '*'
+
+jobs:
+  Integration:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          
+      - name: Install
+        run: .\packages\build\install.ps1
+
+      - name: Build
+        run: .\packages\build\build.ps1
+        env:
+          CODESIGN: ${{secrets.CODESIGN}}
+
+      - name: Test
+        run: .\packages\build\test.ps1
+
+      - name: Document
+        if: ${{ github.head_ref || github.ref_name }} = 'main'
+        run: .\packages\build\document.ps1
+
+      - name: Commit
+        uses: stefanzweifel/git-auto-commit-action@v4
+        if: ${{ github.head_ref || github.ref_name }} = 'main'
+        with:
+          branch: ${{ github.head_ref || github.ref_name }}
+          commit_message: Update Documentation
+
+      - name: Finish
+        run: Write-Output "Done"

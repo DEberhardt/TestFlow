@@ -3,15 +3,23 @@ tag-template: 'v$RESOLVED_VERSION'
 categories:
   - title: "🚀 Features"
     labels:
+      - "feat"
       - "feature"
       - "enhancement"
   - title: "🐛 Bug Fixes"
     labels:
       - "fix"
+      - "fixed"
       - "bugfix"
       - "bug"
   - title: "🧰 Maintenance"
-    label: "chore"
+    labels:
+      - "chore"
+      - "refactor"
+      - "test"
+      - "ci"
+      - "docs"
+      - "perf"
 change-template: "- $TITLE @$AUTHOR (#$NUMBER)"
 change-title-escapes: '\<*_&@`' # You can add # and @ to disable mentions, and add ` to disable code blocks.
 version-resolver:
@@ -31,7 +39,7 @@ template: |
 
   ### Link
 
-  https://www.powershellgallery.com/packages/Orbit/$RESOLVED_VERSION
+  https://www.powershellgallery.com/packages/DETestModule/$RESOLVED_VERSION
 
   ### Changes
 
