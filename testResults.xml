@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
-<test-results xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="nunit_schema_2.5.xsd" name="Pester" total="1" errors="0" failures="0" not-run="0" inconclusive="0" ignored="0" skipped="0" invalid="0" date="2022-10-29" time="22:47:56">
-  <environment nunit-version="2.5.8.0" clr-version="Unknown" user-domain="" platform="Linux" machine-name="fv-az47-73" user="runner" cwd="/home/runner/work/TestFlow/TestFlow" os-version="5.15.0-1022-azure" />
+<test-results xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="nunit_schema_2.5.xsd" name="Pester" total="1" errors="0" failures="0" not-run="0" inconclusive="0" ignored="0" skipped="0" invalid="0" date="2022-10-29" time="22:52:47">
+  <environment cwd="/home/runner/work/TestFlow/TestFlow" clr-version="Unknown" user="runner" os-version="5.15.0-1022-azure" user-domain="" machine-name="fv-az375-618" platform="Linux" nunit-version="2.5.8.0" />
   <culture-info current-culture="" current-uiculture="" />
-  <test-suite type="TestFixture" name="Pester" executed="True" result="Success" success="True" time="0.6138" asserts="0" description="Pester">
+  <test-suite type="TestFixture" name="Pester" executed="True" result="Success" success="True" time="0.6428" asserts="0" description="Pester">
     <results>
-      <test-suite type="TestFixture" name="/home/runner/work/TestFlow/TestFlow/src/DEModuleTest/Tests/DEModuleTest.tests.ps1" executed="True" result="Success" success="True" time="0.6138" asserts="0" description="/home/runner/work/TestFlow/TestFlow/src/DEModuleTest/Tests/DEModuleTest.tests.ps1">
+      <test-suite type="TestFixture" name="/home/runner/work/TestFlow/TestFlow/src/DEModuleTest/Tests/DEModuleTest.tests.ps1" executed="True" result="Success" success="True" time="0.6428" asserts="0" description="/home/runner/work/TestFlow/TestFlow/src/DEModuleTest/Tests/DEModuleTest.tests.ps1">
         <results>
-          <test-suite type="TestFixture" name="Function '/home/runner/work/TestFlow/TestFlow/src/DEModuleTest/Public/Test-GraphConnection.ps1'" executed="True" result="Success" success="True" time="0.153" asserts="0" description="Function '/home/runner/work/TestFlow/TestFlow/src/DEModuleTest/Public/Test-GraphConnection.ps1'">
+          <test-suite type="TestFixture" name="Function '/home/runner/work/TestFlow/TestFlow/src/DEModuleTest/Public/Test-GraphConnection.ps1'" executed="True" result="Success" success="True" time="0.1857" asserts="0" description="Function '/home/runner/work/TestFlow/TestFlow/src/DEModuleTest/Public/Test-GraphConnection.ps1'">
             <results>
-              <test-case description="Should be $true" name="Function '/home/runner/work/TestFlow/TestFlow/src/DEModuleTest/Public/Test-GraphConnection.ps1'.Should be $true" time="0.1111" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should be $true" name="Function '/home/runner/work/TestFlow/TestFlow/src/DEModuleTest/Public/Test-GraphConnection.ps1'.Should be $true" time="0.1448" asserts="0" success="True" result="Success" executed="True" />
             </results>
           </test-suite>
         </results>
