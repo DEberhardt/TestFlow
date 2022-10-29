@@ -1,12 +1,11 @@
 ﻿begin {
   # Sign step
-  Write-Output 'Signing module'
+  Write-Verbose -Message 'Signing module' -Verbose
 
   $RootDir = Get-Location
-  Write-Verbose "Current location:      $($RootDir.Path)"
-
+  Write-Output "Current location:      $($RootDir.Path)"
   $ModuleDir = "$RootDir\packages\module"
-  Write-Verbose "Module build location: $ModuleDir"
+  Write-Output "Module build location: $ModuleDir"
 
 }
 process {
@@ -36,22 +35,22 @@ process {
 
 
     # This should be replaced by signing the script with Secret from Github Actions (personal certificate)
-    Write-Verbose -Message 'Applying Authenticode Signature' -Verbose
+    Write-Verbose -Message "$Module`: Applying Authenticode Signature" -Verbose
     #Import-Module Microsoft.PowerShell.Security
     Write-Output 'Currently SKIPPED - This should be replaced by signing the script with Secret from Github Actions (personal certificate)' -Verbose
     #Codesign Variable to use: $env:CodeSign
 
+
     # Checking Authenticode Signature for PSM1 File
+    Write-Verbose -Message "$Module`: Validating Authenticode Signature" -Verbose
     $SignatureStatus = (Get-AuthenticodeSignature $ManifestTest.Path).Status
     if ( $SignatureStatus -eq 'Valid') {
       Write-Verbose -Message "Status of Code-Signing Signature: $SignatureStatus" -Verbose
     }
     else {
-      Write-Warning -Message "Status of Code-Signing Signature: $SignatureStatus" -Verbose
+      Write-Warning -Message "Status of Code-Signing Signature: $SignatureStatus"
     }
-
   }
-
 }
 end {
   Set-Location $RootDir.Path

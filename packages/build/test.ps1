@@ -1,11 +1,11 @@
 ﻿begin {
   # test step
-  Write-Output 'Running Pester Tests'
+  Write-Verbose -Message 'Running Pester Tests' -Verbose
 
   $RootDir = Get-Location
-  Write-Verbose "Current location:      $($RootDir.Path)"
+  Write-Output "Current location:      $($RootDir.Path)"
   $ModuleDir = "$RootDir\packages\module"
-  Write-Verbose "Module build location: $ModuleDir"
+  Write-Output "Module build location: $ModuleDir"
 
   # Adding custom script Set-ShieldsIoBadge2 (Build helper Module has a bug that is yet to be fixed, PR pending)
   . $PSScriptRoot\Set-ShieldsIoBadge2.ps1

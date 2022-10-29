@@ -1,9 +1,9 @@
 begin {
-  # Build step
-  Write-Output 'Preparing Environment'
+  # Install step
+  Write-Verbose -Message 'Preparing Environment' -Verbose
 
   $RootDir = Get-Location
-  Write-Verbose "Current location:      $($RootDir.Path)"
+  Write-Output "Current location:      $($RootDir.Path)"
 
   # Installing Standard Version
   #npm i -g standard-version

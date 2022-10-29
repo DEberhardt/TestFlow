@@ -1,11 +1,11 @@
 ﻿begin {
   # document step
-  Write-Output 'Updating Documentation & ReadMe'
+  Write-Verbose -Message 'Updating Documentation & ReadMe' -Verbose
 
   $RootDir = Get-Location
-  Write-Verbose "Current location:      $($RootDir.Path)"
+  Write-Output "Current location:      $($RootDir.Path)"
   $ModuleDir = "$RootDir\packages\module"
-  Write-Verbose "Module build location: $ModuleDir"
+  Write-Output "Module build location: $ModuleDir"
 
   # Adding custom script Set-ShieldsIoBadge2 (Build helper Module has a bug that is yet to be fixed, PR pending)
   . $PSScriptRoot\Set-ShieldsIoBadge2.ps1
@@ -17,7 +17,7 @@
 
 }
 process {
-  Write-Output 'Documentation update - Displaying ReadMe before changes are made to it'
+  Write-Verbose -Message 'Documentation update - Displaying ReadMe before changes are made to it' -Verbose
   $ReadMe = Get-Content $RootDir\ReadMe.md
   $ReadMe
 
@@ -25,15 +25,19 @@ process {
   Set-BuildEnvironment -Path $ModuleDir
 
   # Updating Component Status
-  Write-Verbose -Message 'Documentation update - Updating Component Status in ReadMe' -Verbose
-
+  Write-Verbose -Message 'Documentation update - Updating Build Status in ReadMe' -Verbose
   Set-ShieldsIoBadge2 -Path $RootDir\ReadMe.md # Default updates 'Build' to 'pass' or 'fail'
+
+  Write-Verbose -Message 'Documentation update - Querying Private & Public Functions & their status' -Verbose
   $AllPublicFunctions = Get-ChildItem -LiteralPath $global:ModuleDirectory.FullName | Where-Object Name -EQ 'Public' | Get-ChildItem -Filter *.ps1
+  Write-Output "Counting AllPublicFunctions: $($AllPublicFunctions.Count)"
   $AllPrivateFunctions = Get-ChildItem -LiteralPath $global:ModuleDirectory.FullName | Where-Object Name -EQ 'Private' | Get-ChildItem -Filter *.ps1
-  Write-Output "Counting AllPrivateFunctions $($AllPrivateFunctions.Count)"
-  Write-Output "Counting AllPrivateFunctions $($AllPrivateFunctions.Count)"
+  Write-Output "Counting AllPrivateFunctions: $($AllPrivateFunctions.Count)"
   $Script:FunctionStatus = Get-Functionstatus -PublicPath $($AllPublicFunctions.FullName) -PrivatePath $($AllPrivateFunctions.FullName)
   Write-Output $Script:FunctionStatus
+
+  # Updating Component Status
+  Write-Verbose -Message 'Documentation update - Updating Component Status in ReadMe' -Verbose
 
   Set-ShieldsIoBadge2 -Path $RootDir\ReadMe.md -Subject Public -Status $Script:FunctionStatus.Public -Color blue
   Set-ShieldsIoBadge2 -Path $RootDir\ReadMe.md -Subject Private -Status $Script:FunctionStatus.Private -Color grey
@@ -43,7 +47,7 @@ process {
   Set-ShieldsIoBadge2 -Path $RootDir\ReadMe.md -Subject BETA -Status $Script:FunctionStatus.PublicBeta -Color yellow
   Set-ShieldsIoBadge2 -Path $RootDir\ReadMe.md -Subject ALPHA -Status $Script:FunctionStatus.PublicAlpha -Color orange
 
-  Write-Output 'Documentation update - Displaying ReadMe for validation'
+  Write-Verbose -Message 'Documentation update - Displaying ReadMe for validation' -Verbose
   $ReadMe = Get-Content $RootDir\ReadMe.md
   $ReadMe
 
@@ -52,7 +56,8 @@ process {
   Write-Verbose -Message 'Creating MarkDownHelp with PlatyPs' -Verbose
   Import-Module PlatyPs
   foreach ($Module in $ModulesToParse) {
-    Write-Output "Importing $Module - $ModuleDir\$Module\$Module.psd1"
+    Write-Verbose -Message "Importing $Module"-Verbose
+    Write-Output "Module Path: '$ModuleDir\$Module\$Module.psd1'"
     Import-Module "$ModuleDir\$Module\$Module.psd1" -Force
     $ModuleLoaded = Get-Module $Module
     if (-not $ModuleLoaded) { throw "Module '$Module' not found" }
@@ -65,7 +70,7 @@ process {
   }
 
   # Updating version for Release Workflow
-  Write-Verbose -Message 'Updateing Package.json' -Verbose
+  Write-Verbose -Message 'Updating Package.json with Version Number' -Verbose
   # Fetching current Version from Root Module
   $ManifestPath = "$ModuleDir\Orbit\Orbit.psd1"
   $ManifestTest = Test-ModuleManifest -Path $ManifestPath

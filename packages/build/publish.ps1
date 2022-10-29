@@ -1,16 +1,16 @@
 ﻿begin {
   # release step
-  Write-Output 'Creating Release'
+  Write-Verbose -Message 'Creating Release' -Verbose
 
   $RootDir = Get-Location
-  Write-Verbose "Current location:      $($RootDir.Path)"
+  Write-Output "Current location:      $($RootDir.Path)"
   $ModuleDir = "$RootDir\packages\module"
-  Write-Verbose "Module build location: $ModuleDir"
+  Write-Output "Module build location: $ModuleDir"
 
   # Importing Package.json for processing & reading version from file
   $PackageJson = Get-Content $RootDir\package.json -Raw | ConvertFrom-Json
   $ModuleVersion = $PackageJson.Version
-  Write-Verbose -Message "New Version is '$ModuleVersion'" -Verbose
+  Write-Output "New Version is '$ModuleVersion'"
 
   #region Orbit specific
   Set-Location $ModuleDir
