@@ -41,6 +41,7 @@ jobs:
         uses: release-drafter/release-drafter@v5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          #TODO Package and Link are custom variables that are currently not picked up by the release-template.yml
           package: "${{ github.event.repository.name }}"
           link: "https://www.powershellgallery.com/packages/${{ github.event.repository.name }}/${{ needs.changelog.outputs.version }}"
         # (Optional) specify config name to use, relative to .github/. Default: release-drafter.yml

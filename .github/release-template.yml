@@ -39,8 +39,7 @@ template: |
 
   ## Link
 
-  https://www.powershellgallery.com/packages/$env:package/$RESOLVED_VERSION
-  $env:link
+  https://www.powershellgallery.com/packages/$REPOSITORY/$RESOLVED_VERSION
 
   ## Changes
 
@@ -57,3 +56,7 @@ template: |
   ### Security
 
   No changes
+
+  ### Contributors
+
+  $CONTRIBUTORS
