@@ -46,8 +46,8 @@ jobs:
 
       - name: Create Asset to upload to release
         run: |
-          Get-ChildItem | Select-Object LastWriteTime, Length, Size, Name
-          Compress-Archive -DestinationPath ${{ github.event.repository.name }}.zip -Path "*"
+          #TODO unknown where this is saved, if it cannot be saved outside of the Repo, we may need to skip this step.
+          #Compress-Archive -DestinationPath ${{ github.event.repository.name }}.zip -Path "*"
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@1e07f4398721186383de40550babbdf2b84acfc5
@@ -57,4 +57,6 @@ jobs:
           body: ${{ needs.changelog.outputs.body }}
           fail_on_unmatched_files: true
           #token: ${{ secrets.GH_PAT }}
-          files: ${{ github.event.repository.name }}.zip
+          #files: |
+            # not used as the Archive created above cannot be accessed.
+            #${{ github.event.repository.name }}.zip
