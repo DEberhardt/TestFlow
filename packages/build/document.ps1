@@ -72,7 +72,7 @@ process {
   # Updating version for Release Workflow
   Write-Verbose -Message 'Updating Package.json with Version Number' -Verbose
   # Fetching current Version from Root Module
-  $ManifestPath = "$ModuleDir\Orbit\Orbit.psd1"
+  $ManifestPath = "$ModuleDir\DEModuleTest\DEModuleTest.psd1"
   $ManifestTest = Test-ModuleManifest -Path $ManifestPath
 
   # Workflow Changelog and Release Drafter are using Package.json file to read new version
