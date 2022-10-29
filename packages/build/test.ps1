@@ -28,9 +28,8 @@ process {
 
   Write-Verbose -Message 'Pester Testing' -Verbose
   # Code Coverage currently disabled as output is not secure (no value in $TestResults.Coverage)
-
-
   Set-Location $RootDir
+
   $PesterConfig = New-PesterConfiguration
   $Pesterconfig.Run.path = $RootDir
   $PesterConfig.Run.PassThru = $true
@@ -42,6 +41,7 @@ process {
 
   $Script:TestResults = Invoke-Pester -Configuration $PesterConfig
   #$CoveragePercent = [math]::floor(100 - (($Script:TestResults.CodeCoverage.NumberOfCommandsMissed / $Script:TestResults.CodeCoverage.NumberOfCommandsAnalyzed) * 100))
+  $Script:TestResults
 
   Write-Output 'Pester Testing - Displaying README before changes are made to it'
   $README = Get-Content $RootDir\README.md
