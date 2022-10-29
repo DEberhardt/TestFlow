@@ -29,6 +29,8 @@ process {
   Write-Verbose -Message 'Pester Testing' -Verbose
   # Code Coverage currently disabled as output is not secure (no value in $TestResults.Coverage)
 
+
+  Set-Location $RootDir
   $PesterConfig = New-PesterConfiguration
   $Pesterconfig.Run.path = $RootDir
   $PesterConfig.Run.PassThru = $true
@@ -36,7 +38,6 @@ process {
   $PesterConfig.Run.Throw = $true
   $PesterConfig.TestResult.Enabled = $true
   $PesterConfig.Output.CIFormat = 'GithubActions'
-  $PesterConfig.TestResult.OutputPath.Default = "$RootDir\testresults.xml"
   #$PesterConfig.CodeCoverage.Enabled = $true # Not used yet as runtime is extensive and output is not yet used
 
   $Script:TestResults = Invoke-Pester -Configuration $PesterConfig
