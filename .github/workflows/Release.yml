@@ -1,0 +1,86 @@
+﻿name: Release
+
+on: [workflow_dispatch] # Trigger manually
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install
+        run: .\packages\powershell\install.ps1
+
+      - name: Build
+        run: .\packages\powershell\build.ps1
+        env:
+          CODESIGN: ${{secrets.CODESIGN}}
+
+      - name: Test
+        run: .\packages\powershell\test.ps1
+
+      - name: Document
+        run: .\packages\powershell\document.ps1
+
+      - name: Commit to main & release
+        run: .\packages\powershell\commitandrelease.ps1
+        env:
+          USER: ${{secrets.USER}}
+          PUSHTOKEN: ${{secrets.PUSHTOKEN}}
+
+  changelog:
+    needs: build
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.changelog.outputs.version }}
+      body: ${{ steps.changelog.outputs.clean_changelog }}
+      tag: ${{ steps.changelog.outputs.tag }}
+      skipped: ${{ steps.changelog.outputs.skipped }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
+
+      - name: Create changelog
+        id: changelog
+        uses: TriPSs/conventional-changelog-action@v3
+        with:
+          github-token: ${{ secrets.github_token }}
+          #skip-version-file: "true"
+          #version-file: .\package.json
+          output-file: "true" # We want a changelog to be created for posterity
+          skip-commit: "false" # We want a commit to happen before tagging
+          skip-on-empty: "true"
+
+  publish:
+    needs: changelog
+    if: ${{ needs.changelog.outputs.skipped == 'false' }}
+    runs-on: ubuntu-latest
+    env:
+      PUSHTOKEN: ${{secrets.PUSHTOKEN}}
+      POWERSHELLGALLERY_KEY: ${{secrets.POWERSHELLGALLERY_KEY}}
+    defaults:
+      run:
+        shell: pwsh
+        working-directory: ${{ github.workspace }}/src
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
+
+      - name: Create tag for Head
+        run: git tag ${{ needs.changelog.outputs.tag }}
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@1e07f4398721186383de40550babbdf2b84acfc5
+        with:
+          tag_name: ${{ needs.changelog.outputs.tag }}
+          body: ${{ needs.changelog.outputs.body }}
+          fail_on_unmatched_files: true
+          token: ${{ secrets.GH_PAT }}
+          files: |
+            src/dist/posh-*
+            src/dist/themes.*

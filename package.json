@@ -1,0 +1,23 @@
+{
+  "name": "DEModuleTest",
+  "description": "Test Module to validate Github Actions & Workflows",
+  "homepage": "https://github.com/DEberhardt/TestFlow",
+  "keywords": [
+    "Test",
+    "NonFunctional",
+    "DoNotUse"
+  ],
+  "author": "David Eberhardt <Orbit-Module@outlook.com>",
+  "contributors": [],
+  "dependencies": {},
+  "license": "MIT",
+  "LicenseUri": "https://github.com/DEberhardt/TestFlow/blob/master/LICENSE",
+  "ProjectUri": "https://github.com/DEberhardt/TestFlow",
+  "ReleaseNotes": "https://github.com/DEberhardt/TestFlow/blob/master/CHANGELOG.md",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/DEberhardt/TestFlow/TestFlow.git"
+  },
+  "main": "DEModuleTest.psm1",
+  "version": "0.0.0.0"
+}
