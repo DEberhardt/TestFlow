@@ -6,7 +6,7 @@ begin {
   Write-Output "Current location:      $($RootDir.Path)"
 
   Write-Verbose -Message 'Displaying Local directory contents' -Verbose
-  Get-ChildItem $RootDir
+  Get-ChildItem $RootDir | Select-Object LastWriteTime, Length, Size, Name
 
   # Installing Standard Version
   #npm i -g standard-version
