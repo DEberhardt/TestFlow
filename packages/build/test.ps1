@@ -4,7 +4,8 @@
 
   $RootDir = Get-Location
   Write-Output "Current location:      $($RootDir.Path)"
-  $ModuleDir = "$RootDir\packages\module"
+  #$ModuleDir = "$RootDir\packages\module"
+  $ModuleDir = "$RootDir\src"
   Write-Output "Module build location: $ModuleDir"
 
   # Adding custom script Set-ShieldsIoBadge2 (Build helper Module has a bug that is yet to be fixed, PR pending)
@@ -30,12 +31,13 @@ process {
 
   $PesterConfig = New-PesterConfiguration
   #$Pesterconfig.Run.path = $ModuleDir
+  $Pesterconfig.Run.path = $RootDir
   $PesterConfig.Run.PassThru = $true
   $PesterConfig.Run.Exit = $true
   $PesterConfig.Run.Throw = $true
   $PesterConfig.TestResult.Enabled = $true
   $PesterConfig.Output.CIFormat = 'GithubActions'
-  $PesterConfig.TestResult.OutputPath.Default = '..\..\testresults.xml'
+  #$PesterConfig.TestResult.OutputPath.Default = "$RootDir\testresults.xml"
   #$PesterConfig.CodeCoverage.Enabled = $true # Not used yet as runtime is extensive and output is not yet used
 
   $Script:TestResults = Invoke-Pester -Configuration $PesterConfig

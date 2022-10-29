@@ -4,7 +4,8 @@
 
   $RootDir = Get-Location
   Write-Output "Current location:      $($RootDir.Path)"
-  $ModuleDir = "$RootDir\packages\module"
+  #$ModuleDir = "$RootDir\packages\module"
+  $ModuleDir = "$RootDir\src"
   Write-Output "Module build location: $ModuleDir"
 
 }

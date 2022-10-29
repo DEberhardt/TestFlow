@@ -4,7 +4,8 @@
 
   $RootDir = Get-Location
   Write-Output "Current location:      $($RootDir.Path)"
-  $ModuleDir = "$RootDir\packages\module"
+  #$ModuleDir = "$RootDir\packages\module"
+  $ModuleDir = "$RootDir\src"
   Write-Output "Module build location: $ModuleDir"
 
   # Adding custom script Set-ShieldsIoBadge2 (Build helper Module has a bug that is yet to be fixed, PR pending)
@@ -61,7 +62,7 @@ process {
     Import-Module "$ModuleDir\$Module\$Module.psd1" -Force
     $ModuleLoaded = Get-Module $Module
     if (-not $ModuleLoaded) { throw "Module '$Module' not found" }
-    $DocsFolder = ".\docs\$Module\"
+    $DocsFolder = "$RootDir\docs\$Module\"
 
     New-MarkdownHelp -Module $ModuleLoaded.Name -OutputFolder $DocsFolder -Force -AlphabeticParamsOrder:$false
     New-ExternalHelp -Path $DocsFolder -OutputPath $DocsFolder -Force
