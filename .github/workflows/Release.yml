@@ -22,7 +22,7 @@ jobs:
           github-token: ${{ secrets.github_token }}
           #skip-version-file: "true" # This would omit the output to the Package JSON, we need that though for publishing!
           #version-file: .\package.json # This is default and does not need to be specified
-          output-file: "true" # We want a changelog to be created for posterity
+          output-file: "CHANGELOG.md" # We want a changelog to be created for posterity
           skip-commit: "false" # We want a commit to happen before tagging
           skip-on-empty: "true"
 

@@ -5,6 +5,9 @@ begin {
   $RootDir = Get-Location
   Write-Output "Current location:      $($RootDir.Path)"
 
+  Write-Verbose -Message 'Displaying Local directory contents' -Verbose
+  Get-ChildItem $RootDir
+
   # Installing Standard Version
   #npm i -g standard-version
 }

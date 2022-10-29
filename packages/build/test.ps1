@@ -35,6 +35,7 @@ process {
   $PesterConfig.Run.Throw = $true
   $PesterConfig.TestResult.Enabled = $true
   $PesterConfig.Output.CIFormat = 'GithubActions'
+  $PesterConfig.TestResult.OutputPath.Default = '..\..\testresults.xml'
   #$PesterConfig.CodeCoverage.Enabled = $true # Not used yet as runtime is extensive and output is not yet used
 
   $Script:TestResults = Invoke-Pester -Configuration $PesterConfig

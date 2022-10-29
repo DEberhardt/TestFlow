@@ -37,14 +37,17 @@ jobs:
           Get-Module -Name Pester, posh-git, platyPS, InvokeBuild, BuildHelpers, MicrosoftTeams
 
       - name: Build
-        run: .\packages\build\build.ps1
+        run: |
+          #.\packages\build\build.ps1
 
       - name: Test
-        run: .\packages\build\test.ps1
+        run: |
+          #.\packages\build\test.ps1
 
       - name: Document
         if: ${{ github.head_ref || github.ref_name }} != 'main' # Integration only updates Documentation if not on Main
-        run: .\packages\build\document.ps1
+        run: |
+          #.\packages\build\document.ps1
 
       - name: Commit
         uses: stefanzweifel/git-auto-commit-action@v4
