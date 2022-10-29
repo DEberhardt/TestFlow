@@ -41,7 +41,4 @@ jobs:
         if: ${{ github.head_ref || github.ref_name }} = 'main' # Integration only updates Documentation if on Main
         with:
           branch: ${{ github.head_ref || github.ref_name }}
-          commit_message: "docs(workflow): Updated Documentation"
-
-      - name: Finish
-        run: Write-Output "Done"
+          commit_message: "docs(workflow): Integration: BOT Workflow updated documentation"
