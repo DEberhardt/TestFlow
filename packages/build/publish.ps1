@@ -29,7 +29,7 @@ process {
   #Publish Module
   Write-Verbose -Message 'Publish: Loop through all Modules' -Verbose
   foreach ($Module in $ModulesToParse) {
-    Write-Verbose -Message "$Module`: Publishing Module - PowerShellGallery" -Verbose
+    Write-Verbose -Message "Module '$Module': Publishing Module to PowerShellGallery" -Verbose
     try {
       # Build a splat containing the required details and make sure to Stop for errors which will trigger the catch
       $PM = @{
@@ -37,6 +37,7 @@ process {
         NuGetApiKey = $env:NuGetApiKey
         Verbose     = $true
         ErrorAction = 'Stop'
+        #TODO Test whether Tags, LicenseUri and ProjectUri can (or should) be injected via $PackageJson.keywords, etc.
         #Tags        = @('', '')
         #LicenseUri  = 'https://github.com/DEberhardt/Orbit/blob/master/LICENSE.md'
         #ProjectUri  = 'https://github.com/DEberhardt/Orbit'
@@ -46,6 +47,7 @@ process {
       $ManifestTest = Test-ModuleManifest -Path $PM.path
 
       # Handling prereleases
+      $PrivateData = Get-Metadata -Path $ManifestTest.Path -PropertyName PrivateData
       if ($PackageJson.isPreRelease) {
         $preReleaseTag = $PackageJson.preReleaseTag
 
@@ -54,12 +56,16 @@ process {
         Update-Metadata -Path $ManifestTest.Path -PropertyName PrivateData -Value $PrivateData
 
         $ManifestTest = Test-ModuleManifest -Path $PM.path
-
-        <# Alternative to the above, crude replacement in file
-        # This requires the string "#Prerelease = '-prerelease'" in the PrivateData.Psdata object!
-        $PSD1Content = (Get-Content $PM.path -Raw)
-        $PSD1Content.Replace("#Prerelease = '-prerelease'", "Prerelease = '-$preReleaseTag'") | Out-File -Encoding 'UTF8' $PM.path
-        #>
+      }
+      else {
+        if ( $PrivateData.PsData.ContainsKey('PreRelease') ) {
+          [void]$PrivateData.PsData.Remove('PreRelease')
+          Update-Metadata -Path $ManifestTest.Path -PropertyName PrivateData -Value $PrivateData
+          $ManifestTest = Test-ModuleManifest -Path $PM.path
+        }
+        else {
+          Write-Output "No Pre-Release key found in Manifest: OK"
+        }
       }
 
       # Updating Metadata from Package.json - for Definition see above

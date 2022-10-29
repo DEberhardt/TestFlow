@@ -46,10 +46,11 @@ jobs:
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@1e07f4398721186383de40550babbdf2b84acfc5
+        #if: startsWith(github.ref, 'refs/tags/')
         with:
           tag_name: ${{ needs.changelog.outputs.tag }}
           body: ${{ needs.changelog.outputs.body }}
           fail_on_unmatched_files: true
           #token: ${{ secrets.GH_PAT }}
           files: |
-            *
+            src/*

@@ -2,8 +2,8 @@
 
 on:
   push:
-    branches-ignore:
-      - main2 # Going to be 'main' only, but for testing purposes we only exclude the non-existent 'main2'
+    branches:
+      - '*' # Targeting all Branches in this repository
 
 jobs:
   Integration:
@@ -26,16 +26,6 @@ jobs:
       - name: Install
         run: .\packages\build\install.ps1
 
-      - name: Display PowerShell Environment and Modules
-        run: |
-          Write-Output "Installed Modules"
-          Get-Module -Name Pester, posh-git, platyPS, InvokeBuild, BuildHelpers, MicrosoftTeams -ListAvailable
-          Write-Output "Installed Module Paths"
-          Get-Module -Name Pester, posh-git, platyPS, InvokeBuild, BuildHelpers, MicrosoftTeams -ListAvailable | Select Path
-
-          Write-Output "Loaded Modules"
-          Get-Module -Name Pester, posh-git, platyPS, InvokeBuild, BuildHelpers, MicrosoftTeams
-
       - name: Build
         run: .\packages\build\build.ps1
 
@@ -43,12 +33,12 @@ jobs:
         run: .\packages\build\test.ps1
 
       - name: Document
-        if: ${{ github.head_ref || github.ref_name }} != 'main' # Integration only updates Documentation if not on Main
+        if: ${{ github.head_ref || github.ref_name }} = 'main' # Integration only updates Documentation if on Main
         run: .\packages\build\document.ps1
 
       - name: Commit
         uses: stefanzweifel/git-auto-commit-action@v4
-        if: ${{ github.head_ref || github.ref_name }} != 'main' # Integration only updates Documentation if not on Main
+        if: ${{ github.head_ref || github.ref_name }} = 'main' # Integration only updates Documentation if on Main
         with:
           branch: ${{ github.head_ref || github.ref_name }}
           commit_message: "docs(workflow): Updated Documentation"
