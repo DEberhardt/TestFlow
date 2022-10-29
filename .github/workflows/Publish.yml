@@ -1,0 +1,40 @@
+﻿name: Publish Module
+
+on: [workflow_dispatch] # Trigger manually - later On Release
+
+jobs:
+
+  publish-module:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install and cache PowerShell modules
+        uses: potatoqualitee/psmodulecache@v5.1
+        with:
+          modules-to-cache: Pester, posh-git, platyPS, InvokeBuild, BuildHelpers, MicrosoftTeams
+          updatable: 'true'
+
+      - name: Build
+        run: .\packages\powershell\build.ps1
+
+      - name: Test
+        run: .\packages\powershell\test.ps1
+
+      - name: Sign
+        run: .\packages\powershell\sign.ps1
+        env:
+          CODESIGN: ${{secrets.CODESIGN}}
+
+      - name: Publish
+        run: .\packages\powershell\Publish.ps1
+        # This takes the version from the package.json as it can read that without issue
+        env:
+          POWERSHELLGALLERY_KEY: ${{secrets.POWERSHELLGALLERY_KEY}}
+
+      - name: Complete
+        run: Write-Output "Module Published"

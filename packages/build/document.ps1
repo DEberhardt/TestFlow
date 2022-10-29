@@ -7,29 +7,29 @@
   $ModuleDir = "$RootDir\packages\module"
   Write-Verbose "Module build location: $ModuleDir"
 
+  # Adding custom script Set-ShieldsIoBadge2 (Build helper Module has a bug that is yet to be fixed, PR pending)
   . $PSScriptRoot\Set-ShieldsIoBadge2.ps1
   . $PSScriptRoot\Get-FunctionStatus.ps1
 
   Set-Location $ModuleDir
-  $global:OrbitDirs = Get-ChildItem -Path $ModuleDir -Directory | Sort-Object Name -Descending
-  $global:OrbitModule = $OrbitDirs.Basename
+  $global:ModuleDirectory = Get-ChildItem -Path $ModuleDir -Directory | Sort-Object Name -Descending
+  $global:ModulesToParse = $ModuleDirectory.Basename
 
 }
 process {
-  Write-Output 'Displaying ReadMe before changes are made to it'
+  Write-Output 'Documentation update - Displaying ReadMe before changes are made to it'
   $ReadMe = Get-Content $RootDir\ReadMe.md
   $ReadMe
-
-  # Updating Component Status
-  Write-Verbose -Message 'Updating Component Status in ReadMe' -Verbose
 
   # Setting Build Helpers Build Environment ENV:BH*
   Set-BuildEnvironment -Path $ModuleDir
 
-  # Updating ShieldsIO badges
+  # Updating Component Status
+  Write-Verbose -Message 'Documentation update - Updating Component Status in ReadMe' -Verbose
+
   Set-ShieldsIoBadge2 -Path $RootDir\ReadMe.md # Default updates 'Build' to 'pass' or 'fail'
-  $AllPublicFunctions = Get-ChildItem -LiteralPath $global:orbitDirs.FullName | Where-Object Name -EQ 'Public' | Get-ChildItem -Filter *.ps1
-  $AllPrivateFunctions = Get-ChildItem -LiteralPath $global:orbitDirs.FullName | Where-Object Name -EQ 'Private' | Get-ChildItem -Filter *.ps1
+  $AllPublicFunctions = Get-ChildItem -LiteralPath $global:ModuleDirectory.FullName | Where-Object Name -EQ 'Public' | Get-ChildItem -Filter *.ps1
+  $AllPrivateFunctions = Get-ChildItem -LiteralPath $global:ModuleDirectory.FullName | Where-Object Name -EQ 'Private' | Get-ChildItem -Filter *.ps1
   Write-Output "Counting AllPrivateFunctions $($AllPrivateFunctions.Count)"
   Write-Output "Counting AllPrivateFunctions $($AllPrivateFunctions.Count)"
   $Script:FunctionStatus = Get-Functionstatus -PublicPath $($AllPublicFunctions.FullName) -PrivatePath $($AllPrivateFunctions.FullName)
@@ -43,7 +43,7 @@ process {
   Set-ShieldsIoBadge2 -Path $RootDir\ReadMe.md -Subject BETA -Status $Script:FunctionStatus.PublicBeta -Color yellow
   Set-ShieldsIoBadge2 -Path $RootDir\ReadMe.md -Subject ALPHA -Status $Script:FunctionStatus.PublicAlpha -Color orange
 
-  Write-Output 'Displaying ReadMe for validation'
+  Write-Output 'Documentation update - Displaying ReadMe for validation'
   $ReadMe = Get-Content $RootDir\ReadMe.md
   $ReadMe
 
@@ -51,7 +51,7 @@ process {
   # Create new markdown and XML help files
   Write-Verbose -Message 'Creating MarkDownHelp with PlatyPs' -Verbose
   Import-Module PlatyPs
-  foreach ($Module in $OrbitModule) {
+  foreach ($Module in $ModulesToParse) {
     Write-Output "Importing $Module - $ModuleDir\$Module\$Module.psd1"
     Import-Module "$ModuleDir\$Module\$Module.psd1" -Force
     $ModuleLoaded = Get-Module $Module

@@ -7,17 +7,18 @@
   $ModuleDir = "$RootDir\packages\module"
   Write-Verbose "Module build location: $ModuleDir"
 
+  # Adding custom script Set-ShieldsIoBadge2 (Build helper Module has a bug that is yet to be fixed, PR pending)
   . $PSScriptRoot\Set-ShieldsIoBadge2.ps1
 
   Set-Location $ModuleDir
-  $global:OrbitDirs = Get-ChildItem -Path $ModuleDir -Directory | Sort-Object Name -Descending
-  $global:OrbitModule = $OrbitDirs.Basename
+  $global:ModuleDirectory = Get-ChildItem -Path $ModuleDir -Directory | Sort-Object Name -Descending
+  $global:ModulesToParse = $ModuleDirectory.Basename
 
 }
 process {
   Write-Verbose -Message 'Loading Modules' -Verbose
   Get-ChildItem $ModuleDir
-  foreach ($Module in $OrbitModule) {
+  foreach ($Module in $ModulesToParse) {
     Write-Output "Importing $Module - $ModuleDir\$Module\$Module.psd1"
     Import-Module "$ModuleDir\$Module\$Module.psd1" -Force
   }
@@ -32,11 +33,15 @@ process {
   $PesterConfig.Run.Exit = $true
   $PesterConfig.Run.Throw = $true
   $PesterConfig.TestResult.Enabled = $true
-  $PesterConfig.Output.CIFormat = "GithubActions"
-  #$PesterConfig.CodeCoverage.Enabled = $true
+  $PesterConfig.Output.CIFormat = 'GithubActions'
+  #$PesterConfig.CodeCoverage.Enabled = $true # Not used yet as runtime is extensive and output is not yet used
 
   $Script:TestResults = Invoke-Pester -Configuration $PesterConfig
   #$CoveragePercent = [math]::floor(100 - (($Script:TestResults.CodeCoverage.NumberOfCommandsMissed / $Script:TestResults.CodeCoverage.NumberOfCommandsAnalyzed) * 100))
+
+  Write-Output 'Pester Testing - Displaying ReadMe before changes are made to it'
+  $ReadMe = Get-Content $RootDir\ReadMe.md
+  $ReadMe
 
   Write-Verbose -Message 'Pester Testing - Updating ReadMe' -Verbose
   Set-BuildEnvironment -Path $ModuleDir
@@ -49,7 +54,7 @@ process {
 
   #Set-ShieldsIoBadge2 -Subject CodeCoverage -Status $Script:TestResults.Coverage -AsPercentage
 
-  Write-Output 'Displaying ReadMe for validation'
+  Write-Output 'Pester Testing - Displaying ReadMe for validation'
   $ReadMe = Get-Content $RootDir\ReadMe.md
   $ReadMe
 

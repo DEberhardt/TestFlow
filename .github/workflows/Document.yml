@@ -1,0 +1,32 @@
+﻿name: Update Documentation
+
+on: [workflow_dispatch] # Trigger manually - Later: On Release or after Publish
+
+jobs:
+
+  document:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install and cache PowerShell modules
+        uses: potatoqualitee/psmodulecache@v5.1
+        with:
+          modules-to-cache: Pester, posh-git, platyPS, InvokeBuild, BuildHelpers, MicrosoftTeams
+
+      - name: Build
+        run: .\packages\powershell\build.ps1
+
+      - name: Document
+        run: .\packages\powershell\document.ps1
+
+      - name: Commit
+        uses: stefanzweifel/git-auto-commit-action@v4
+        if: ${{ github.head_ref || github.ref_name }} = 'main' # This will only do it on the main branch
+        with:
+          branch: ${{ github.head_ref || github.ref_name }}
+          commit_message: "docs(workflow): Updated Documentation"

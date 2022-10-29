@@ -4,9 +4,14 @@
 
   $RootDir = Get-Location
   Write-Verbose "Current location:      $($RootDir.Path)"
+
   $ModuleDir = "$RootDir\packages\module"
   Write-Verbose "Module build location: $ModuleDir"
 
+  # Importing Package.json for processing & reading version from file
+  $PackageJson = Get-Content $RootDir\package.json -Raw | ConvertFrom-Json
+  $ModuleVersion = $PackageJson.Version
+  Write-Verbose -Message "Current Version is '$ModuleVersion'" -Verbose
 }
 process {
   Write-Verbose -Message 'Creating Directory' -Verbose
@@ -18,59 +23,34 @@ process {
   $Excludes = @('.vscode', '*.git*', '*.md', 'Archive', 'Incubator', 'packages', 'Workbench', 'PSScriptA*', 'Scrap*.*')
   Copy-Item -Path .\src\* -Destination $ModuleDir -Exclude $Excludes -Recurse -Force
 
-  #region Orbit specific
+  # Setting Location
   Set-Location $ModuleDir
 
   # Defining Scope (Modules to process)
   Write-Verbose -Message 'General: Building Module Scope - Parsing Modules' -Verbose
-  $global:OrbitDirs = Get-ChildItem -Path $ModuleDir -Directory | Sort-Object Name -Descending
-  $global:OrbitModule = $OrbitDirs.Basename
-  Write-Output "Defined Scope: $($OrbitModule -join ', ')"
-  #endregion
+  $global:ModuleDirectory = Get-ChildItem -Path $ModuleDir -Directory | Sort-Object Name -Descending
+  $global:ModulesToParse = $ModuleDirectory.Basename
+  Write-Output "Defined Scope: $($ModulesToParse -join ', ')"
 
-  #<# Disable if Publish is doing this part
-  #region Define Version from Root Module
-  # Fetching current Version from Root Module
-  $ManifestPath = "$ModuleDir\Orbit\Orbit.psd1"
+  # Setting location to Module Root ($ModuleDir)
+  Write-Verbose -Message 'General: Set-BuildEnvironment to Module Directory' -Verbose
+  $ManifestPath = "$ModuleDir\DEModuleTest\DEModuleTest.psd1"
   $ManifestTest = Test-ModuleManifest -Path $ManifestPath
 
   # Setting Build Helpers Build Environment ENV:BH*
-  Write-Verbose -Message 'General: Module Version' -Verbose
   Set-BuildEnvironment -Path $ManifestTest.ModuleBase
-
-  # Creating new version Number (determined from found Version)
-  [System.Version]$version = $ManifestTest.Version
-  Write-Output "Old Version: $version"
-  # Determining Next available Version from published Package
-  $nextAvailableVersion = Get-NextNugetPackageVersion -Name $env:BHProjectName
-  Write-Output "Next available Version: $nextAvailableVersion"
-  # We're going to add 1 to the build value since a new commit has been merged to Master
-  # This means that the major / minor / build values will be consistent across GitHub and the Gallery
-  # To publish a new minor version, simply remove set the version in Orbit.psd1 from "1.3.14" to "1.4"
-  [String]$nextProposedVersion = New-Object -TypeName System.Version -ArgumentList ($version.Major, $version.Minor, $($version.Build + 1))
-  Write-Output "Next proposed Version: $nextProposedVersion"
-  if ( $nextProposedVersion -lt $nextAvailableVersion ) {
-    Write-Warning 'Version mismatch - taking next available version'
-    $global:newVersion = $nextAvailableVersion
-  }
-  else {
-    $global:newVersion = $nextProposedVersion
-  }
-  Write-Output "New Version: $global:newVersion"
-  #endregion
-  #>
 
   # Resetting RequiredModules in Orbit Root to allow processing via Build script - This will be added later, before publishing
   Write-Verbose -Message "General: Updating Orbit.psm1 to reflect all nested Modules' Version" -Verbose
   $RequiredModulesValue = @(
-    @{ModuleName = 'MicrosoftTeams'; ModuleVersion = '4.2.0'; }
+    @{ModuleName = 'MicrosoftTeams'; ModuleVersion = '4.8.0'; }
   )
   Update-Metadata -Path $env:BHPSModuleManifest -PropertyName RequiredModules -Value $RequiredModulesValue
   #region
 
   # Updating all Modules
   Write-Verbose -Message 'Build: Loop through all Modules' -Verbose
-  foreach ($Module in $OrbitModule) {
+  foreach ($Module in $ModulesToParse) {
     Write-Verbose -Message "$Module`: Testing Manifest" -Verbose
     # This is where the module manifest lives
     $ManifestPath = "$ModuleDir\$Module\$Module.psd1"
@@ -96,10 +76,14 @@ process {
       Select-String -Path $manifestPath -Pattern $_
     }
 
-    # Updating Version
-    $Copyright = "(c) 2020-$( (Get-Date).Year ) $Name. All rights reserved."
+    # Updating Metadata from Package.json - for Definition see above
+    # Updating Copyright
+    $CurrentYear = $( (Get-Date).Year )
+    $Copyright = $PackageJson.Copyright -replace '$CurrentYear', $CurrentYear
     Update-Metadata -Path $ManifestTest.Path -PropertyName Copyright -Value $Copyright
-    #Update-Metadata -Path $ManifestTest.Path -PropertyName ModuleVersion -Value $newVersion
+
+    # Updating Version
+    Update-Metadata -Path $ManifestTest.Path -PropertyName ModuleVersion -Value $ModuleVersion
 
     Write-Output 'Manifest re-tested incl. Version, Copyright, etc.'
     $ManifestTest = Test-ModuleManifest -Path $ManifestPath
