@@ -46,7 +46,8 @@ jobs:
 
       - name: Create Asset to upload to release
         run: |
-          Compress-Archive -DestinationPath ${{ github.event.repository.name }}.zip -Path "src/*"
+          Get-ChildItem | Select-Object LastWriteTime, Length, Size, Name
+          #Compress-Archive -DestinationPath ${{ github.event.repository.name }}.zip -Path "src/*"
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@1e07f4398721186383de40550babbdf2b84acfc5
