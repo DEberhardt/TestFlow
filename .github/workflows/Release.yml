@@ -44,6 +44,9 @@ jobs:
       - name: Create tag for Head
         run: git tag ${{ needs.changelog.outputs.tag }}
 
+      - name: Create Asset to upload to release
+        run: tar -f ${{ github.event.repository.name }}.zip -c "src/*"
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@1e07f4398721186383de40550babbdf2b84acfc5
         #if: startsWith(github.ref, 'refs/tags/')
@@ -52,5 +55,4 @@ jobs:
           body: ${{ needs.changelog.outputs.body }}
           fail_on_unmatched_files: true
           #token: ${{ secrets.GH_PAT }}
-          files: |
-            src/*
+          files: ${{ github.event.repository.name }}.zip

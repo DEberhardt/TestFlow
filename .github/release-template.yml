@@ -1,5 +1,5 @@
-﻿name-template: 'v$RESOLVED_VERSION'
-tag-template: 'v$RESOLVED_VERSION'
+﻿name-template: 'v$tag_name'
+tag-template: 'v$tag_name'
 categories:
   - title: "🚀 Features"
     labels:
@@ -39,7 +39,7 @@ template: |
 
   ### Link
 
-  https://www.powershellgallery.com/packages/DETestModule/$RESOLVED_VERSION
+  https://www.powershellgallery.com/packages/DETestModule/$tag_name
 
   ### Changes
 
