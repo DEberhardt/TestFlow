@@ -19,6 +19,9 @@ jobs:
           modules-to-cache: Pester, posh-git, platyPS, InvokeBuild, BuildHelpers, MicrosoftTeams
           updatable: 'true'
 
+      - name: Install
+        run: .\packages\build\install.ps1
+
       - name: Build
         run: .\packages\powershell\build.ps1
 

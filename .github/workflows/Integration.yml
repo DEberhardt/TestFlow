@@ -23,6 +23,9 @@ jobs:
           modules-to-cache: Pester, posh-git, platyPS, InvokeBuild, BuildHelpers, MicrosoftTeams
           #updatable: 'true' # If used, must have cache information (i.e. version number for at least one module)
 
+      - name: Install
+        run: .\packages\build\install.ps1
+
       - name: Display PowerShell Environment and Modules
         run: |
           Write-Output "Installed Modules"
@@ -32,10 +35,6 @@ jobs:
 
           Write-Output "Loaded Modules"
           Get-Module -Name Pester, posh-git, platyPS, InvokeBuild, BuildHelpers, MicrosoftTeams
-
-      - name: Install
-        run: | # Experimental - Replacement with PsModuleCache
-          #.\packages\build\install.ps1
 
       - name: Build
         run: .\packages\build\build.ps1

@@ -19,7 +19,8 @@ process {
   Write-Verbose -Message 'Loading Modules' -Verbose
   Get-ChildItem $ModuleDir
   foreach ($Module in $ModulesToParse) {
-    Write-Output "Importing $Module - $ModuleDir\$Module\$Module.psd1"
+    Write-Verbose -Message "Importing Module: $Module" -Verbose
+    Write-Output "Module Path: '$ModuleDir\$Module\$Module.psd1'"
     Import-Module "$ModuleDir\$Module\$Module.psd1" -Force
   }
   Get-Module | Select-Object Name, Version, ModuleType, ModuleBase | Format-Table -AutoSize
@@ -39,24 +40,24 @@ process {
   $Script:TestResults = Invoke-Pester -Configuration $PesterConfig
   #$CoveragePercent = [math]::floor(100 - (($Script:TestResults.CodeCoverage.NumberOfCommandsMissed / $Script:TestResults.CodeCoverage.NumberOfCommandsAnalyzed) * 100))
 
-  Write-Output 'Pester Testing - Displaying ReadMe before changes are made to it'
-  $ReadMe = Get-Content $RootDir\ReadMe.md
-  $ReadMe
+  Write-Output 'Pester Testing - Displaying README before changes are made to it'
+  $README = Get-Content $RootDir\README.md
+  $README
 
-  Write-Verbose -Message 'Pester Testing - Updating ReadMe' -Verbose
+  Write-Verbose -Message 'Pester Testing - Updating README' -Verbose
   Set-BuildEnvironment -Path $ModuleDir
 
-  Set-ShieldsIoBadge2 -Path $RootDir\ReadMe.md -Subject Result -Status $Script:TestResults.Result
-  Set-ShieldsIoBadge2 -Path $RootDir\ReadMe.md -Subject Passed -Status $Script:TestResults.PassedCount -Color blue
-  Set-ShieldsIoBadge2 -Path $RootDir\ReadMe.md -Subject Failed -Status $Script:TestResults.FailedCount -Color red
-  Set-ShieldsIoBadge2 -Path $RootDir\ReadMe.md -Subject Skipped -Status $Script:TestResults.SkippedCount -Color yellow
-  Set-ShieldsIoBadge2 -Path $RootDir\ReadMe.md -Subject NotRun -Status $Script:TestResults.NotRunCount -Color darkgrey
+  Set-ShieldsIoBadge2 -Path $RootDir\README.md -Subject Result -Status $Script:TestResults.Result
+  Set-ShieldsIoBadge2 -Path $RootDir\README.md -Subject Passed -Status $Script:TestResults.PassedCount -Color blue
+  Set-ShieldsIoBadge2 -Path $RootDir\README.md -Subject Failed -Status $Script:TestResults.FailedCount -Color red
+  Set-ShieldsIoBadge2 -Path $RootDir\README.md -Subject Skipped -Status $Script:TestResults.SkippedCount -Color yellow
+  Set-ShieldsIoBadge2 -Path $RootDir\README.md -Subject NotRun -Status $Script:TestResults.NotRunCount -Color darkgrey
 
   #Set-ShieldsIoBadge2 -Subject CodeCoverage -Status $Script:TestResults.Coverage -AsPercentage
 
-  Write-Output 'Pester Testing - Displaying ReadMe for validation'
-  $ReadMe = Get-Content $RootDir\ReadMe.md
-  $ReadMe
+  Write-Output 'Pester Testing - Displaying README for validation'
+  $README = Get-Content $RootDir\README.md
+  $README
 
 }
 end {

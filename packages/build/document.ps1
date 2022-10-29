@@ -1,6 +1,6 @@
 ﻿begin {
   # document step
-  Write-Verbose -Message 'Updating Documentation & ReadMe' -Verbose
+  Write-Verbose -Message 'Updating Documentation & README' -Verbose
 
   $RootDir = Get-Location
   Write-Output "Current location:      $($RootDir.Path)"
@@ -17,16 +17,16 @@
 
 }
 process {
-  Write-Verbose -Message 'Documentation update - Displaying ReadMe before changes are made to it' -Verbose
-  $ReadMe = Get-Content $RootDir\ReadMe.md
-  $ReadMe
+  Write-Verbose -Message 'Documentation update - Displaying README before changes are made to it' -Verbose
+  $README = Get-Content $RootDir\README.md
+  $README
 
   # Setting Build Helpers Build Environment ENV:BH*
   Set-BuildEnvironment -Path $ModuleDir
 
   # Updating Component Status
-  Write-Verbose -Message 'Documentation update - Updating Build Status in ReadMe' -Verbose
-  Set-ShieldsIoBadge2 -Path $RootDir\ReadMe.md # Default updates 'Build' to 'pass' or 'fail'
+  Write-Verbose -Message 'Documentation update - Updating Build Status in README' -Verbose
+  Set-ShieldsIoBadge2 -Path $RootDir\README.md # Default updates 'Build' to 'pass' or 'fail'
 
   Write-Verbose -Message 'Documentation update - Querying Private & Public Functions & their status' -Verbose
   $AllPublicFunctions = Get-ChildItem -LiteralPath $global:ModuleDirectory.FullName | Where-Object Name -EQ 'Public' | Get-ChildItem -Filter *.ps1
@@ -37,26 +37,26 @@ process {
   Write-Output $Script:FunctionStatus
 
   # Updating Component Status
-  Write-Verbose -Message 'Documentation update - Updating Component Status in ReadMe' -Verbose
+  Write-Verbose -Message 'Documentation update - Updating Component Status in README' -Verbose
 
-  Set-ShieldsIoBadge2 -Path $RootDir\ReadMe.md -Subject Public -Status $Script:FunctionStatus.Public -Color blue
-  Set-ShieldsIoBadge2 -Path $RootDir\ReadMe.md -Subject Private -Status $Script:FunctionStatus.Private -Color grey
+  Set-ShieldsIoBadge2 -Path $RootDir\README.md -Subject Public -Status $Script:FunctionStatus.Public -Color blue
+  Set-ShieldsIoBadge2 -Path $RootDir\README.md -Subject Private -Status $Script:FunctionStatus.Private -Color grey
 
-  Set-ShieldsIoBadge2 -Path $RootDir\ReadMe.md -Subject Live -Status $Script:FunctionStatus.PublicLive -Color blue
-  Set-ShieldsIoBadge2 -Path $RootDir\ReadMe.md -Subject RC -Status $Script:FunctionStatus.PublicRC -Color green
-  Set-ShieldsIoBadge2 -Path $RootDir\ReadMe.md -Subject BETA -Status $Script:FunctionStatus.PublicBeta -Color yellow
-  Set-ShieldsIoBadge2 -Path $RootDir\ReadMe.md -Subject ALPHA -Status $Script:FunctionStatus.PublicAlpha -Color orange
+  Set-ShieldsIoBadge2 -Path $RootDir\README.md -Subject Live -Status $Script:FunctionStatus.PublicLive -Color blue
+  Set-ShieldsIoBadge2 -Path $RootDir\README.md -Subject RC -Status $Script:FunctionStatus.PublicRC -Color green
+  Set-ShieldsIoBadge2 -Path $RootDir\README.md -Subject BETA -Status $Script:FunctionStatus.PublicBeta -Color yellow
+  Set-ShieldsIoBadge2 -Path $RootDir\README.md -Subject ALPHA -Status $Script:FunctionStatus.PublicAlpha -Color orange
 
-  Write-Verbose -Message 'Documentation update - Displaying ReadMe for validation' -Verbose
-  $ReadMe = Get-Content $RootDir\ReadMe.md
-  $ReadMe
+  Write-Verbose -Message 'Documentation update - Displaying README for validation' -Verbose
+  $README = Get-Content $RootDir\README.md
+  $README
 
 
   # Create new markdown and XML help files
   Write-Verbose -Message 'Creating MarkDownHelp with PlatyPs' -Verbose
   Import-Module PlatyPs
   foreach ($Module in $ModulesToParse) {
-    Write-Verbose -Message "Importing $Module"-Verbose
+    Write-Verbose -Message "Importing Module: $Module" -Verbose
     Write-Output "Module Path: '$ModuleDir\$Module\$Module.psd1'"
     Import-Module "$ModuleDir\$Module\$Module.psd1" -Force
     $ModuleLoaded = Get-Module $Module
