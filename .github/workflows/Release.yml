@@ -26,37 +26,23 @@ jobs:
           skip-commit: "false" # We want a commit to happen before tagging
           skip-on-empty: "true"
 
-  publish:
+  update_release_draft:
     needs: changelog
-    if: ${{ needs.changelog.outputs.skipped == 'false' }}
+    permissions:
+      contents: write  # for release-drafter/release-drafter to create a github release
+      pull-requests: write  # for release-drafter/release-drafter to add label to PR
     runs-on: ubuntu-latest
-    env:
-      PUSHTOKEN: ${{secrets.PUSHTOKEN}}
-      POWERSHELLGALLERY_KEY: ${{secrets.POWERSHELLGALLERY_KEY}}
-    defaults:
-      run:
-        shell: pwsh
-        working-directory: ${{ github.workspace }}/src
     steps:
-      - name: Checkout code
-        uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
+      - name: 'Get current date'
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
 
-      - name: Create tag for Head
-        run: git tag ${{ needs.changelog.outputs.tag }}
-
-      - name: Create Asset to upload to release
-        run: |
-          #TODO unknown where this is saved, if it cannot be saved outside of the Repo, we may need to skip this step.
-          #Compress-Archive -DestinationPath ${{ github.event.repository.name }}.zip -Path "*"
-
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@1e07f4398721186383de40550babbdf2b84acfc5
-        #if: startsWith(github.ref, 'refs/tags/')
+      - name: 'Create or update Draft Release'
+        uses: release-drafter/release-drafter@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          link: "https://www.powershellgallery.com/packages/${{ github.event.repository.name }}/${{ needs.changelog.outputs.version }}"
+        # (Optional) specify config name to use, relative to .github/. Default: release-drafter.yml
         with:
-          tag_name: ${{ needs.changelog.outputs.tag }}
-          body: ${{ needs.changelog.outputs.body }}
-          fail_on_unmatched_files: true
-          #token: ${{ secrets.GH_PAT }}
-          #files: |
-            # not used as the Archive created above cannot be accessed.
-            #${{ github.event.repository.name }}.zip
+          config-name: release-template.yml
+          #disable-autolabeler: true
