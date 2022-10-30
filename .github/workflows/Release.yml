@@ -39,8 +39,6 @@ jobs:
     steps:
       - name: Read node from package.json
         uses: culshaw/read-package-node-version-actions@v1
-        with:
-          path: ""
         id: package-node-version
 
       - name: Show Package.json contents
