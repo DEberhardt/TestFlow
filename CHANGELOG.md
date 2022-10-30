@@ -1,4 +1,13 @@
-# 0.1.0 (2022-10-30)
+# [0.2.0](https://github.com/DEberhardt/TestFlow/TestFlow/compare/v0.1.0...v0.2.0) (2022-10-30)
+
+
+### Features
+
+* **workflow:** Updated Release cycle ([5fca7f6](https://github.com/DEberhardt/TestFlow/TestFlow/commit/5fca7f6a012d242bea7f0e7be9bb4e752e2d6b34))
+
+
+
+# [0.1.0](https://github.com/DEberhardt/TestFlow/TestFlow/compare/836dd38aeaa02dcb8a29738eac45d9def5c06a3a...v0.1.0) (2022-10-30)
 
 
 ### Features
