@@ -26,8 +26,8 @@ jobs:
           skip-on-empty: "true"
 
   publish:
-    needs: changelog
     if: ${{ steps.changelog.outputs.skipped == 'false' }}
+    needs: changelog
     runs-on: ubuntu-latest
     defaults:
       run:
