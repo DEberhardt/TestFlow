@@ -17,24 +17,24 @@ jobs:
         uses: potatoqualitee/psmodulecache@v5.1
         with:
           modules-to-cache: Pester, posh-git, platyPS, InvokeBuild, BuildHelpers, MicrosoftTeams
-          updatable: 'true'
+          #updatable: 'true' # If used, must have cache information (i.e. version number for at least one module)
 
       - name: Install
         run: .\packages\build\install.ps1
 
       - name: Build
-        run: .\packages\powershell\build.ps1
+        run: .\packages\build\build.ps1
 
       - name: Test
-        run: .\packages\powershell\test.ps1
+        run: .\packages\build\test.ps1
 
       - name: Sign
-        run: .\packages\powershell\sign.ps1
+        run: .\packages\build\sign.ps1
         env:
           CODESIGN: ${{secrets.CODESIGN}}
 
       - name: Publish
-        run: .\packages\powershell\Publish.ps1
+        run: .\packages\build\Publish.ps1
         # This takes the version from the package.json as it can read that without issue
         env:
           POWERSHELLGALLERY_KEY: ${{secrets.POWERSHELLGALLERY_KEY}}
