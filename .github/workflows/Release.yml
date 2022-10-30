@@ -49,9 +49,9 @@ jobs:
           tag_name: ${{ needs.changelog.outputs.tag }}
           release_name: ${{ needs.changelog.outputs.tag }}
           body: ${{ needs.changelog.outputs.body }}
-          draft: true
-          updateOnlyUnreleased: true
-          omitDraftDuringUpdate: true
-          omitPrereleaseDuringUpdate: true
+          #draft: true
+          #updateOnlyUnreleased: true
+          #omitDraftDuringUpdate: true
+          #omitPrereleaseDuringUpdate: true
           #TODO Package.yml was intended to test reading from package.json. This does not yet work
           #prerelease: ${{ jobs.package.outputs.isPreRelease }}
