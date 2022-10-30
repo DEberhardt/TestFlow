@@ -1,4 +1,6 @@
 ﻿name: Release
+# NOTE: This does not work - Version is not resolved correctly, cannot be fed?
+# Archived switching to mikepenz/action-gh-release
 
 on: [workflow_dispatch] # Trigger manually (later: on Push to Main)
 
@@ -26,17 +28,12 @@ jobs:
           skip-commit: "true"
           skip-on-empty: "true"
 
-  publish:
+  update_release_draft:
     needs: changelog
-    if: ${{ needs.changelog.outputs.skipped == 'false' }}
+    permissions:
+      contents: write  # for release-drafter/release-drafter to create a github release
+      pull-requests: write  # for release-drafter/release-drafter to add label to PR
     runs-on: ubuntu-latest
-    env:
-      PUSHTOKEN: ${{secrets.PUSHTOKEN}}
-      POWERSHELLGALLERY_KEY: ${{secrets.POWERSHELLGALLERY_KEY}}
-    defaults:
-      run:
-        shell: pwsh
-        working-directory: ${{ github.workspace }}/src
     steps:
       - name: Checkout code
         uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
@@ -44,10 +41,18 @@ jobs:
       - name: Create tag for Head
         run: git tag ${{ needs.changelog.outputs.tag }}
 
-      - name: Create GitHub Release
-        uses: mikepenz/action-gh-release@{latest}
-        if: startsWith(github.ref, 'refs/tags/')
+      - name: 'Get current date'
+        id: date
+        run: echo "{date}={$(date +'%Y-%m-%d')}" >> $GITHUB_OUTPUT
+
+      - name: 'Create or update Draft Release'
+        uses: release-drafter/release-drafter@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          #TODO Package and Link are custom variables that are currently not picked up by the release-template.yml
+          package: "${{ github.event.repository.name }}"
+          link: "https://www.powershellgallery.com/packages/${{ github.event.repository.name }}/${{ needs.changelog.outputs.version }}"
+        # (Optional) specify config name to use, relative to .github/. Default: release-drafter.yml
         with:
-          tag_name: ${{ needs.changelog.outputs.tag }}
-          body: ${{ needs.changelog.outputs.body }}
-          fail_on_unmatched_files: false
+          config-name: release-template.yml
+          #disable-autolabeler: true
