@@ -34,27 +34,24 @@ jobs:
       run:
         shell: pwsh
     outputs:
-      isPreRelease: ${{ steps.package-json.outputs.isPreRelease }}
+      isPreRelease: ${{ steps.package-version.outputs.isPreRelease }}
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
+      - name: Read node from package.json
+        uses: culshaw/read-package-node-version-actions@v1
+        with:
+          path: "./package.json"
+        id: package-node-version
 
-      - name: Read package.json
-        uses: dutscher/read-package-json-endpoint-actions@v1.3.37
-        id: package-json
-
-      - name: Show PreRelease flag as output
+      - name: Show Package.json contents
         run: |
-          Write-Output "PreRelease set to: ${{ steps.package-json.outputs.isPreRelease }}"
+          Write-Output "Version is: ${{ steps.package-version.outputs.version }}"
+          Write-Output "PreRelease: ${{ steps.package-version.outputs.isPreRelease }}"
 
   publish:
     needs: package
     if: ${{ needs.changelog.outputs.skipped == 'false' }}
     runs-on: ubuntu-latest
-    env:
-      PUSHTOKEN: ${{secrets.PUSHTOKEN}}
-      POWERSHELLGALLERY_KEY: ${{secrets.POWERSHELLGALLERY_KEY}}
     defaults:
       run:
         shell: pwsh
