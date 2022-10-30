@@ -45,24 +45,25 @@ process {
       }
 
       # Fetching current Version from Module
-      $ManifestTest = Test-ModuleManifest -Path $PM.path
+      $ManifestFile = "$($PM.path)\$Module.psd1"
+      $ManifestTest = Test-ModuleManifest -Path $ManifestFile
 
       # Handling prereleases
-      $PrivateData = Get-Metadata -Path $ManifestTest.Path -PropertyName PrivateData
+      $PrivateData = Get-Metadata -Path $ManifestFile -PropertyName PrivateData
       if ($PackageJson.isPreRelease) {
         $preReleaseTag = $PackageJson.preReleaseTag
 
-        $PrivateData = Get-Metadata -Path $ManifestTest.Path -PropertyName PrivateData
+        $PrivateData = Get-Metadata -Path $ManifestFile -PropertyName PrivateData
         $PrivateData.PsData.Prerelease = "-$preReleaseTag" # Adding or setting Prerelease tag
-        Update-Metadata -Path $ManifestTest.Path -PropertyName PrivateData -Value $PrivateData
+        Update-Metadata -Path $ManifestFile -PropertyName PrivateData -Value $PrivateData
 
-        $ManifestTest = Test-ModuleManifest -Path $PM.path
+        $ManifestTest = Test-ModuleManifest -Path $ManifestFile
       }
       else {
         if ( $PrivateData.PsData.ContainsKey('PreRelease') ) {
           [void]$PrivateData.PsData.Remove('PreRelease')
-          Update-Metadata -Path $ManifestTest.Path -PropertyName PrivateData -Value $PrivateData
-          $ManifestTest = Test-ModuleManifest -Path $PM.path
+          Update-Metadata -Path $ManifestFile -PropertyName PrivateData -Value $PrivateData
+          $ManifestTest = Test-ModuleManifest -Path $ManifestFile
         }
         else {
           Write-Output "No Pre-Release key found in Manifest: OK"
@@ -73,10 +74,10 @@ process {
       # Updating Copyright
       $CurrentYear = $( (Get-Date).Year )
       $Copyright = $PackageJson.Copyright -replace '$CurrentYear', $CurrentYear
-      Update-Metadata -Path $ManifestTest.Path -PropertyName Copyright -Value $Copyright
+      Update-Metadata -Path $ManifestFile -PropertyName Copyright -Value $Copyright
 
       # Updating Version
-      Update-Metadata -Path $ManifestTest.Path -PropertyName ModuleVersion -Value $ModuleVersion
+      Update-Metadata -Path $ManifestFile -PropertyName ModuleVersion -Value $ModuleVersion
 
       # Output ManifestTest
       Write-Output $ManifestTest
@@ -88,7 +89,7 @@ process {
     }
     catch {
       # Sad panda; it broke
-      Write-Warning "PowerShell Module '$Module', Publishing module failed for Version $($TestManiManifestTestfest.Version)"
+      Write-Warning "PowerShell Module '$Module', Publishing module failed for Version $($ManifestTest.Version)"
       throw $_
     }
   }
