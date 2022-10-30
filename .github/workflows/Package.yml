@@ -18,11 +18,9 @@ jobs:
       isPreRelease: ${{ steps.info.outputs.isPreRelease }}
 
     steps:
-      - run: $RootDir = Get-Location; Get-ChildItem $RootDir | Select-Object LastWriteTime, Length, Size, Name
-
-      - name: package.json info
+      - name: Edit or Read any JSON
         id: info
-        uses: jaywcjlove/github-action-package@main
+        uses: RadovanPelka/github-action-json@v1.0.1
 
       - run: Write-Output "name - ${{ steps.info.outputs.name }}"
       - run: Write-Output "version - ${{ steps.info.outputs.version }}"
