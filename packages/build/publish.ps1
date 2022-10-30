@@ -83,8 +83,8 @@ process {
       Write-Output $ManifestTest
 
       # Publishing Module
-      Publish-Module @PM -WhatIf -Verbose
-      #Publish-Module @PM
+      #Publish-Module @PM -Whatif
+      Publish-Module @PM
       Write-Output "PowerShell Module '$Module', Version $($ManifestTest.Version) published to the PowerShell Gallery."
     }
     catch {
