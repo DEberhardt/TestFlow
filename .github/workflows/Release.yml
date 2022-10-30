@@ -28,7 +28,6 @@ jobs:
 
   publish:
     needs: changelog
-    if: ${{ steps.changelog.outputs.skipped == 'false' }}
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -36,13 +35,16 @@ jobs:
         working-directory: ${{ github.workspace }}
     steps:
       - name: Checkout code
+        if: ${{ steps.changelog.outputs.skipped == 'false' }}
         uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
 
       - name: Create tag for Head
+        if: ${{ steps.changelog.outputs.skipped == 'false' }}
         run: git tag ${{ needs.changelog.outputs.tag }}
 
       - name: Create Release
         uses: ncipollo/release-action@v1.11.1
+        if: ${{ steps.changelog.outputs.skipped == 'false' }}
         env:
           GITHUB_TOKEN: ${{ secrets.github_token }}
         with:
