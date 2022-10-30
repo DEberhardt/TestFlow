@@ -50,11 +50,11 @@ process {
 
       # Handling prereleases
       $PrivateData = Get-Metadata -Path $ManifestFile -PropertyName PrivateData
-      if ($PackageJson.isPreRelease) {
+      if ( $PackageJson.isPreRelease -eq 'true' ) {
         $preReleaseTag = $PackageJson.preReleaseTag
 
         $PrivateData = Get-Metadata -Path $ManifestFile -PropertyName PrivateData
-        $PrivateData.PsData.Prerelease = "-$preReleaseTag" # Adding or setting Prerelease tag
+        $PrivateData.PsData.Prerelease = $preReleaseTag # Adding or setting Prerelease tag
         Update-Metadata -Path $ManifestFile -PropertyName PrivateData -Value $PrivateData
 
         $ManifestTest = Test-ModuleManifest -Path $ManifestFile
