@@ -8,6 +8,9 @@ on:
 jobs:
   changelog:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: pwsh
     outputs:
       version: ${{ steps.changelog.outputs.version }}
       body: ${{ steps.changelog.outputs.clean_changelog }}
