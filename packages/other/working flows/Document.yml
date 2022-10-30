@@ -25,6 +25,9 @@ jobs:
       - name: Build
         run: .\packages\build\build.ps1
 
+      - name: Test
+        run: .\packages\build\test.ps1
+
       - name: Document
         run: .\packages\build\document.ps1
 
