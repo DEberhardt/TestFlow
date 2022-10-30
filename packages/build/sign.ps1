@@ -41,16 +41,6 @@ process {
     Write-Output 'Currently SKIPPED - This should be replaced by signing the script with Secret from Github Actions (personal certificate)' -Verbose
     #Codesign Variable to use: $env:CodeSign
 
-
-    # Checking Authenticode Signature for PSM1 File
-    Write-Verbose -Message "$Module`: Validating Authenticode Signature" -Verbose
-    $SignatureStatus = (Get-AuthenticodeSignature $ManifestTest.Path).Status
-    if ( $SignatureStatus -eq 'Valid') {
-      Write-Verbose -Message "Status of Code-Signing Signature: $SignatureStatus" -Verbose
-    }
-    else {
-      Write-Warning -Message "Status of Code-Signing Signature: $SignatureStatus"
-    }
   }
 }
 end {

@@ -20,7 +20,7 @@ jobs:
       - name: Install and cache PowerShell modules
         uses: potatoqualitee/psmodulecache@v5.1
         with:
-          modules-to-cache: Pester, posh-git, platyPS, InvokeBuild, BuildHelpers, Microsoft.PowerShell.Security, MicrosoftTeams
+          modules-to-cache: Pester, posh-git, platyPS, InvokeBuild, BuildHelpers, MicrosoftTeams
           #updatable: 'true' # If used, must have cache information (i.e. version number for at least one module)
 
       - name: Install
