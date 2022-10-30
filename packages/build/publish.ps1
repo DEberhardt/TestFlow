@@ -33,7 +33,8 @@ process {
     try {
       # Build a splat containing the required details and make sure to Stop for errors which will trigger the catch
       $PM = @{
-        Path        = "$ModuleDir\$Module\$Module.psd1"
+        #Name        = "$ModuleDir\$Module\$Module.psd1"
+        Path        = "$ModuleDir\$Module"
         NuGetApiKey = $env:NuGetApiKey
         Verbose     = $true
         ErrorAction = 'Stop'
