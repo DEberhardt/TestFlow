@@ -26,7 +26,7 @@ jobs:
           skip-on-empty: "true"
 
   publish:
-    if: ${{ needs.changelog.outputs.skipped == 'false' }}
+    if: ${{ jobs.changelog.outputs.skipped == 'false' }}
     needs: changelog
     runs-on: ubuntu-latest
     defaults:
@@ -38,7 +38,7 @@ jobs:
         uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
 
       - name: Create tag for Head
-        run: git tag ${{ needs.changelog.outputs.tag }}
+        run: git tag ${{ jobs.changelog.outputs.tag }}
 
       - name: Create Release
         uses: ncipollo/release-action@v1.11.1
@@ -46,12 +46,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.github_token }}
         with:
-          tag_name: ${{ needs.changelog.outputs.tag }}
-          release_name: ${{ needs.changelog.outputs.tag }}
-          body: ${{ needs.changelog.outputs.clean_changelog }}
+          tag_name: ${{ jobs.changelog.outputs.tag }}
+          release_name: ${{ jobs.changelog.outputs.tag }}
+          body: ${{ jobs.changelog.outputs.body }}
           draft: true
           updateOnlyUnreleased: true
           omitDraftDuringUpdate: true
           omitPrereleaseDuringUpdate: true
           #TODO Package.yml was intended to test reading from package.json. This does not yet work
-          #prerelease: ${{ steps.package.outputs.isPreRelease }}
+          #prerelease: ${{ jobs.package.outputs.isPreRelease }}
