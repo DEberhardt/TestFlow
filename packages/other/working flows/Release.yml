@@ -1,9 +1,6 @@
 ﻿name: Release
 
-on:
-  push:
-    branches:
-      - main # Targeting only the main branch - pushes to this branch trigger release cycle
+on: [workflow_dispatch] # Trigger manually (later: on Push to Main)
 
 jobs:
   changelog:
@@ -17,17 +14,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
 
-      - name: Install and cache PowerShell modules
-        uses: potatoqualitee/psmodulecache@v5.1
-        with:
-          modules-to-cache: Pester, posh-git, platyPS, InvokeBuild, BuildHelpers, MicrosoftTeams
-
-      - name: Test
-        run: .\packages\build\test.ps1
-
-      - name: Document
-        run: .\packages\build\document.ps1
-
       - name: Create changelog
         id: changelog
         uses: TriPSs/conventional-changelog-action@v3
@@ -39,46 +25,9 @@ jobs:
           skip-commit: "false" # We want a commit to write the Changelog file
           skip-on-empty: "true"
 
-  publish-module:
-    if: ${{ needs.changelog.outputs.skipped == 'false' }}
-    needs: changelog
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: pwsh
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Install and cache PowerShell modules
-        uses: potatoqualitee/psmodulecache@v5.1
-        with:
-          modules-to-cache: Pester, posh-git, platyPS, InvokeBuild, BuildHelpers, MicrosoftTeams
-          #updatable: 'true' # If used, must have cache information (i.e. version number for at least one module)
-
-      - name: Install
-        run: .\packages\build\install.ps1
-
-      - name: Build
-        run: .\packages\build\build.ps1
-
-      - name: Sign
-        run: .\packages\build\sign.ps1
-        env:
-          CODESIGN: ${{secrets.CODESIGN}}
-
-      - name: Publish
-        run: .\packages\build\publish.ps1
-        # This takes the version from the package.json as it can read that without issue
-        env:
-          NuGetApiKey: ${{secrets.NuGetApiKey}}
-
-      - name: Complete
-        run: Write-Output "Module published to PowerShell Gallery"
-
   publish:
     if: ${{ needs.changelog.outputs.skipped == 'false' }}
-    needs: publish-module
+    needs: changelog
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -93,12 +42,17 @@ jobs:
 
       - name: Create Release
         uses: ncipollo/release-action@v1.11.1
+        #if: ${{ steps.changelog.outputs.skipped == 'false' }}
         env:
           GITHUB_TOKEN: ${{ secrets.github_token }}
         with:
           tag: ${{ needs.changelog.outputs.tag }}
           name: ${{ needs.changelog.outputs.tag }}
           body: ${{ needs.changelog.outputs.body }}
-
-      - name: Complete
-        run: Write-Output "Module published to Github"
+          #TODO Currently set as a draft to allow manual publishing on Publishing to PsGalleray (on Release)
+          draft: true
+          updateOnlyUnreleased: true
+          omitDraftDuringUpdate: true
+          omitPrereleaseDuringUpdate: true
+          #TODO Package.yml was intended to test reading from package.json. This does not yet work
+          #prerelease: ${{ jobs.package.outputs.isPreRelease }}

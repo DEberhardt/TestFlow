@@ -1,12 +1,10 @@
-﻿name: Integration
+﻿name: Update Documentation
 
-on:
-  push:
-    branches-ignore:
-      - main # Targeting all Branches in this repository
+on: [workflow_dispatch] # Trigger manually - Later: On Release or after Publish
 
 jobs:
-  Integration:
+
+  document:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -14,8 +12,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
 
       - name: Install and cache PowerShell modules
         uses: potatoqualitee/psmodulecache@v5.1
@@ -31,3 +27,12 @@ jobs:
 
       - name: Test
         run: .\packages\build\test.ps1
+
+      - name: Document
+        run: .\packages\build\document.ps1
+
+      - name: Commit
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          branch: ${{ github.head_ref || github.ref_name }}
+          commit_message: "docs(workflow): Documentation: BOT Workflow updated documentation"
