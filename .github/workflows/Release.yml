@@ -34,7 +34,7 @@ jobs:
       run:
         shell: pwsh
     outputs:
-      isPreRelease: ${{ steps.package-json-endpoint.outputs.isPreRelease }}
+      isPreRelease: ${{ steps.package-json.outputs.isPreRelease }}
 
     steps:
       - name: Checkout code
@@ -42,11 +42,11 @@ jobs:
 
       - name: Read package.json
         uses: dutscher/read-package-json-endpoint-actions@v1.3.37
-        id: package-json-endpoint
+        id: package-json
 
       - name: Show PreRelease flag as output
         run: |
-          Write-Output "PreRelease set to: ${{ steps.package-json-endpoint.outputs.isPreRelease }}"
+          Write-Output "PreRelease set to: ${{ steps.package-json.outputs.isPreRelease }}"
 
   publish:
     needs: package
