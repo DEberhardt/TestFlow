@@ -17,7 +17,7 @@ jobs:
       isPreRelease: ${{ steps.info.outputs.isPreRelease }}
 
     steps:
-      - run: Get-ChildItem | Select-Object LastWriteTime, Length, Size, Name
+      - run: $RootDir = Get-Location; Get-ChildItem $RootDir | Select-Object LastWriteTime, Length, Size, Name
 
       - name: package.json info
         id: info
