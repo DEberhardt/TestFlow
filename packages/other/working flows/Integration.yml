@@ -1,6 +1,9 @@
-﻿name: Integrate manually
+﻿name: Integration
 
-on: [workflow_dispatch] # Trigger manually
+on:
+  push:
+    branches:
+      - '*' # Targeting all Branches in this repository
 
 jobs:
   Integration:

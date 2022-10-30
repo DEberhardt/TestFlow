@@ -1,0 +1,58 @@
+﻿name: Release
+
+on: [workflow_dispatch] # Trigger manually (later: on Push to Main)
+
+jobs:
+  changelog:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.changelog.outputs.version }}
+      body: ${{ steps.changelog.outputs.clean_changelog }}
+      tag: ${{ steps.changelog.outputs.tag }}
+      skipped: ${{ steps.changelog.outputs.skipped }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
+
+      - name: Create changelog
+        id: changelog
+        uses: TriPSs/conventional-changelog-action@v3
+        with:
+          github-token: ${{ secrets.github_token }}
+          #skip-version-file: "true" # This would omit the output to the Package JSON, we need that though for publishing!
+          #version-file: .\package.json # This is default and does not need to be specified
+          output-file: "CHANGELOG.md" # We want a changelog to be created for posterity
+          skip-commit: "false" # We want a commit to write the Changelog file
+          skip-on-empty: "true"
+
+  publish:
+    if: ${{ needs.changelog.outputs.skipped == 'false' }}
+    needs: changelog
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: pwsh
+        working-directory: ${{ github.workspace }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
+
+      - name: Create tag for Head
+        run: git tag ${{ needs.changelog.outputs.tag }}
+
+      - name: Create Release
+        uses: ncipollo/release-action@v1.11.1
+        #if: ${{ steps.changelog.outputs.skipped == 'false' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.github_token }}
+        with:
+          tag: ${{ needs.changelog.outputs.tag }}
+          name: ${{ needs.changelog.outputs.tag }}
+          body: ${{ needs.changelog.outputs.body }}
+          #TODO Currently set as a draft to allow manual publishing on Publishing to PsGalleray (on Release)
+          draft: true
+          updateOnlyUnreleased: true
+          omitDraftDuringUpdate: true
+          omitPrereleaseDuringUpdate: true
+          #TODO Package.yml was intended to test reading from package.json. This does not yet work
+          #prerelease: ${{ jobs.package.outputs.isPreRelease }}
