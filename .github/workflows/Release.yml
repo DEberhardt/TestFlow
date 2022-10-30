@@ -50,8 +50,8 @@ jobs:
           release_name: ${{ steps.changelog.outputs.tag }}
           body: ${{ steps.changelog.outputs.clean_changelog }}
           draft: true
-          updateOnlyUnreleased: true
-          omitDraftDuringUpdate: true
-          omitPrereleaseDuringUpdate: true
+          #updateOnlyUnreleased: true
+          #omitDraftDuringUpdate: true
+          #omitPrereleaseDuringUpdate: true
           #TODO Package.yml was intended to test reading from package.json. This does not yet work
           #prerelease: ${{ steps.package.outputs.isPreRelease }}
