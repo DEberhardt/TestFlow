@@ -1,0 +1,42 @@
+﻿name: Package
+
+on: [workflow_dispatch] # Trigger manually (later: on Push to Main)
+
+jobs:
+
+  package:
+    if: ${{ needs.changelog.outputs.skipped == 'false' }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: pwsh
+    outputs:
+      name: ${{ steps.info.outputs.name }}
+      version: ${{ steps.info.outputs.version }}
+      description: ${{ steps.info.outputs.description }}
+      author: ${{ steps.info.outputs.author }}
+      isPreRelease: ${{ steps.info.outputs.isPreRelease }}
+
+    steps:
+      - name: package.json info
+        id: info
+        uses: jaywcjlove/github-action-package@main
+
+      - run: Write-Output "name - ${{ steps.info.outputs.name }}"
+      - run: Write-Output "version - ${{ steps.info.outputs.version }}"
+      - run: Write-Output "description - ${{ steps.info.outputs.description }}"
+      - run: Write-Output "author - ${{ steps.info.outputs.author }}"
+      - run: Write-Output "isPreRelease - ${{ steps.info.outputs.isPreRelease }}"
+
+  next:
+    needs: package
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - run: Write-Output "name - ${{ steps.package.outputs.name }}"
+      - run: Write-Output "version - ${{ steps.package.outputs.version }}"
+      - run: Write-Output "description - ${{ steps.package.outputs.description }}"
+      - run: Write-Output "author - ${{ steps.package.outputs.author }}"
+      - run: Write-Output "isPreRelease - ${{ steps.package.outputs.isPreRelease }}"
