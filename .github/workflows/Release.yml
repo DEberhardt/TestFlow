@@ -40,7 +40,7 @@ jobs:
       - name: Read node from package.json
         uses: culshaw/read-package-node-version-actions@v1
         with:
-          path: ".\"
+          path: ""
         id: package-node-version
 
       - name: Show Package.json contents
@@ -73,6 +73,7 @@ jobs:
           release_name: ${{ steps.changelog.outputs.tag }}
           body: ${{ steps.changelog.outputs.clean_changelog }}
           draft: true
+          updateOnlyUnreleased: true
           omitDraftDuringUpdate: true
           omitPrereleaseDuringUpdate: true
           prerelease: ${{ steps.package.outputs.isPreRelease }}
