@@ -21,6 +21,8 @@ jobs:
       - name: Edit or Read any JSON
         id: info
         uses: RadovanPelka/github-action-json@v1.0.1
+        with:
+          path: ..\..\package.json
 
       - run: Write-Output "name - ${{ steps.info.outputs.name }}"
       - run: Write-Output "version - ${{ steps.info.outputs.version }}"
