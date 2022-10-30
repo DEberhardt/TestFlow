@@ -26,28 +26,8 @@ jobs:
           skip-commit: "false" # We want a commit to write the Changelog file
           skip-on-empty: "true"
 
-  package:
-    needs: changelog
-    if: ${{ needs.changelog.outputs.skipped == 'false' }}
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: pwsh
-    outputs:
-      isPreRelease: ${{ steps.package-version.outputs.isPreRelease }}
-
-    steps:
-      - name: Read node from package.json
-        uses: culshaw/read-package-node-version-actions@v1
-        id: package-node-version
-
-      - name: Show Package.json contents
-        run: |
-          Write-Output "Version is: ${{ steps.package-version.outputs.version }}"
-          Write-Output "PreRelease: ${{ steps.package-version.outputs.isPreRelease }}"
-
   publish:
-    needs: package
+    needs: changelog
     if: ${{ needs.changelog.outputs.skipped == 'false' }}
     runs-on: ubuntu-latest
     defaults:
@@ -74,4 +54,5 @@ jobs:
           updateOnlyUnreleased: true
           omitDraftDuringUpdate: true
           omitPrereleaseDuringUpdate: true
-          prerelease: ${{ steps.package.outputs.isPreRelease }}
+          #TODO Package.yml was intended to test reading from package.json. This does not yet work
+          #prerelease: ${{ steps.package.outputs.isPreRelease }}

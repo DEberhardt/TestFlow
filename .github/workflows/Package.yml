@@ -22,6 +22,7 @@ jobs:
         id: info
         uses: RadovanPelka/github-action-json@v1.0.1
         with:
+          #FIX This does not work
           path: ${{ github.workspace }}\package.json
 
       - run: Write-Output "name - ${{ steps.info.outputs.name }}"
