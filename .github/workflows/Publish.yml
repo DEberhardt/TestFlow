@@ -34,7 +34,7 @@ jobs:
           CODESIGN: ${{secrets.CODESIGN}}
 
       - name: Publish
-        run: .\packages\build\Publish.ps1
+        run: .\packages\build\publish.ps1
         # This takes the version from the package.json as it can read that without issue
         env:
           POWERSHELLGALLERY_KEY: ${{secrets.POWERSHELLGALLERY_KEY}}
