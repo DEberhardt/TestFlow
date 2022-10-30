@@ -9,6 +9,7 @@ jobs:
     defaults:
       run:
         shell: pwsh
+        working-directory: ${{ github.workspace }}
     outputs:
       name: ${{ steps.info.outputs.name }}
       version: ${{ steps.info.outputs.version }}
