@@ -42,16 +42,20 @@ jobs:
           skip-commit: "false" # We want a commit to write the Changelog file
           skip-on-empty: "true"
 
-  publish-module:
+  publish:
     if: ${{ needs.changelog.outputs.skipped == 'false' }}
     needs: changelog
     runs-on: ubuntu-latest
     defaults:
       run:
         shell: pwsh
+        working-directory: ${{ github.workspace }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
+
+      - name: Create tag for Head
+        run: git tag ${{ needs.changelog.outputs.tag }}
 
       - name: Install and cache PowerShell modules
         uses: potatoqualitee/psmodulecache@v5.1
@@ -78,21 +82,6 @@ jobs:
 
       - name: Complete
         run: Write-Output "Module published to PowerShell Gallery"
-
-  publish:
-    if: ${{ needs.changelog.outputs.skipped == 'false' }}
-    needs: publish-module
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: pwsh
-        working-directory: ${{ github.workspace }}
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
-
-      - name: Create tag for Head
-        run: git tag ${{ needs.changelog.outputs.tag }}
 
       - name: Create Release
         uses: ncipollo/release-action@v1.11.1
