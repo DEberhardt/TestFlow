@@ -13,7 +13,7 @@
   RootModule        = 'DEModuleTest.psm1'
 
   # Version number of this module.
-  ModuleVersion     = '0.3.0'
+  ModuleVersion     = '0.0.0'
 
   # Supported PSEditions
   # CompatiblePSEditions = @()
