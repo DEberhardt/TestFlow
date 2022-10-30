@@ -49,6 +49,7 @@ jobs:
           tag: ${{ needs.changelog.outputs.tag }}
           name: ${{ needs.changelog.outputs.tag }}
           body: ${{ needs.changelog.outputs.body }}
+          #TODO Currently set as a draft to allow manual publishing on Publishing to PsGalleray (on Release)
           draft: true
           updateOnlyUnreleased: true
           omitDraftDuringUpdate: true
