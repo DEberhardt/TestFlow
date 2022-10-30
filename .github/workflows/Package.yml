@@ -22,7 +22,7 @@ jobs:
         id: info
         uses: RadovanPelka/github-action-json@v1.0.1
         with:
-          path: ..\..\package.json
+          path: ${{ github.workspace }}\package.json
 
       - run: Write-Output "name - ${{ steps.info.outputs.name }}"
       - run: Write-Output "version - ${{ steps.info.outputs.version }}"
