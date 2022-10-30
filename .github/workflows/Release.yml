@@ -23,7 +23,7 @@ jobs:
           #skip-version-file: "true" # This would omit the output to the Package JSON, we need that though for publishing!
           #version-file: .\package.json # This is default and does not need to be specified
           output-file: "CHANGELOG.md" # We want a changelog to be created for posterity
-          skip-commit: "true"
+          skip-commit: "false" # We want a commit to write the Changelog file
           skip-on-empty: "true"
 
   publish:
