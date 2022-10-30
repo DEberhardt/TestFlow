@@ -37,7 +37,7 @@ jobs:
         run: .\packages\build\publish.ps1
         # This takes the version from the package.json as it can read that without issue
         env:
-          POWERSHELLGALLERY_KEY: ${{secrets.POWERSHELLGALLERY_KEY}}
+          NuGetApiKey: ${{secrets.NuGetApiKey}}
 
       - name: Complete
         run: Write-Output "Module Published"
