@@ -3,7 +3,7 @@
 on:
   push:
     branches-ignore:
-      - main # Targeting all Branches in this repository
+      - main # Targeting all Branches in this repository except main (Release path)
 
 jobs:
   Integration:
