@@ -3,7 +3,7 @@
   Write-Output 'Root Module'
 
   $RootDir = $(Get-Location).path
-  Write-Verbose "Current location:      $RootDir"
+  Write-Output "Current location:      $RootDir"
   $ModuleDir = "$RootDir\packages\module"
   Write-Verbose "Module build location: $ModuleDir"
 
