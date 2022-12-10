@@ -2,8 +2,8 @@
   # release step
   Write-Verbose -Message 'Creating Release' -Verbose
 
-  $RootDir = Get-Location
-  Write-Output "Current location:      $($RootDir.Path)"
+  $RootDir = $(Get-Location).path
+  Write-Output "Current location:      $RootDir"
   #$ModuleDir = "$RootDir\packages\module"
   $ModuleDir = "$RootDir\src"
   Write-Output "Module build location: $ModuleDir"
@@ -64,7 +64,7 @@ process {
           $ManifestTest = Test-ModuleManifest -Path $ManifestFile
         }
         else {
-          Write-Output "No Pre-Release key found in Manifest: OK"
+          Write-Output 'No Pre-Release key found in Manifest: OK'
         }
       }
 
@@ -93,5 +93,5 @@ process {
   }
 }
 end {
-  Set-Location $RootDir.Path
+  Set-Location $RootDir
 }

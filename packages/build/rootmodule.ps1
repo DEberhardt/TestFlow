@@ -2,8 +2,8 @@
   # release step
   Write-Output 'Root Module'
 
-  $RootDir = Get-Location
-  Write-Verbose "Current location:      $($RootDir.Path)"
+  $RootDir = $(Get-Location).path
+  Write-Verbose "Current location:      $RootDir"
   $ModuleDir = "$RootDir\packages\module"
   Write-Verbose "Module build location: $ModuleDir"
 
@@ -48,5 +48,5 @@ process {
 
 }
 end {
-  Set-Location $RootDir.Path
+  Set-Location $RootDir
 }

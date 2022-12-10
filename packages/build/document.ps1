@@ -2,8 +2,8 @@
   # document step
   Write-Verbose -Message 'Updating Documentation & README' -Verbose
 
-  $RootDir = Get-Location
-  Write-Output "Current location:      $($RootDir.Path)"
+  $RootDir = $(Get-Location).path
+  Write-Output "Current location:      $RootDir"
   #$ModuleDir = "$RootDir\packages\module"
   $ModuleDir = "$RootDir\src"
   Write-Output "Module build location: $ModuleDir"
@@ -85,5 +85,5 @@ process {
 
 }
 end {
-  Set-Location $RootDir.Path
+  Set-Location $RootDir
 }

@@ -2,8 +2,8 @@ begin {
   # Install step
   Write-Verbose -Message 'Preparing Environment' -Verbose
 
-  $RootDir = Get-Location
-  Write-Output "Current location:      $($RootDir.Path)"
+  $RootDir = $(Get-Location).path
+  Write-Output "Current location:      $RootDir"
 
   Write-Verbose -Message 'Displaying Local directory contents' -Verbose
   Get-ChildItem $RootDir | Select-Object LastWriteTime, Length, Size, Name
@@ -31,5 +31,5 @@ process {
 
 }
 end {
-  Set-Location $RootDir.Path
+  Set-Location $RootDir
 }
