@@ -73,16 +73,21 @@ process {
       $CurrentYear = $( (Get-Date).Year )
       $Copyright = $PackageJson.Copyright -replace '$CurrentYear', $CurrentYear
       Update-Metadata -Path $ManifestFile -PropertyName Copyright -Value $Copyright
-
+      Write-Verbose -Message "Module '$Module': Copyright changed to '$Copyright'" -Verbose
       # Updating Version
+
       Update-Metadata -Path $ManifestFile -PropertyName ModuleVersion -Value $ModuleVersion
+      $PM.Version = $ModuleVersion
+      Write-Verbose -Message "Module '$Module':  Version changed to '$ModuleVersion'" -Verbose
 
       # Output ManifestTest
-      Write-Output $ManifestTest
+      $ManifestTest = Test-ModuleManifest -Path $ManifestFile
+      Write-Output $ManifestTest | Format-List
+      Write-Output $PM | Format-List
 
       # Publishing Module
-      #Publish-Module @PM -WhatIf
-      Publish-Module @PM
+      Publish-Module @PM -WhatIf
+      #Publish-Module @PM
       Write-Output "PowerShell Module '$Module', Version $($ManifestTest.Version) published to the PowerShell Gallery."
     }
     catch {
