@@ -36,6 +36,7 @@ process {
         #Name        = "$ModuleDir\$Module\$Module.psd1"
         Path        = "$ModuleDir\$Module"
         NuGetApiKey = $env:NuGetApiKey
+        Version     = $null
         Verbose     = $true
         ErrorAction = 'Stop'
         LicenseUri  = $PackageJson.LicenseUri
