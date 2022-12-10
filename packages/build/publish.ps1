@@ -38,10 +38,8 @@ process {
         NuGetApiKey = $env:NuGetApiKey
         Verbose     = $true
         ErrorAction = 'Stop'
-        #TODO Test whether Tags, LicenseUri and ProjectUri can (or should) be injected via $PackageJson.keywords, etc.
-        #Tags        = @('', '')
-        #LicenseUri  = 'https://github.com/DEberhardt/Orbit/blob/master/LICENSE.md'
-        #ProjectUri  = 'https://github.com/DEberhardt/Orbit'
+        LicenseUri  = $PackageJson.LicenseUri
+        ProjectUri  = $PackageJson.ProjectUri
       }
 
       # Fetching current Version from Module

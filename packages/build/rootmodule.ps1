@@ -17,7 +17,7 @@ process {
 
   # Setting RequiredModules in Orbit Root before publishing
   $RequiredModulesValue = @(
-    @{ModuleName = 'MicrosoftTeams'; ModuleVersion = '4.2.0'; },
+    @{ModuleName = 'MicrosoftTeams'; ModuleVersion = '4.9.1'; },
     #@{ModuleName = 'Microsoft.Graph'; ModuleVersion = '1.9.6'; },
     @{ModuleName = 'Orbit.Authentication'; RequiredVersion = "$newVersion"; },
     @{ModuleName = 'Orbit.Groups'; RequiredVersion = "$newVersion"; },
@@ -45,7 +45,7 @@ process {
     Write-Warning -Message "Status of Code-Signing Signature: $SignatureStatus" -Verbose
   }
 
-  
+
 }
 end {
   Set-Location $RootDir.Path
